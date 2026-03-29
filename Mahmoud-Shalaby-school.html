@@ -1,0 +1,375 @@
+<!doctype html> <html lang="ar" dir="rtl" class="h-full"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title> مختبر الكيمياء - Chemistry Lab</title> <script src="https://cdn.tailwindcss.com/3.4.17"></script> <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script> <script src="/_sdk/element_sdk.js"></script> <link <style href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"> <style> * { box-sizing: border-box; margin: 0; padding: 0; } html, body { height: 100%; font-family: 'Cairo', sans-serif; background: #0a0a14; } .container { height: 100%; width: 100%; display: flex; flex-direction: column; overflow: hidden; } } @keyframes glowPulse { 0%,100% { box-shadow: 0 0 15px rgba(0,255,255,.3), inset 0 0 15px rgba(0,255,255,.05); } 50% { box-shadow: 0 0 30px rgba(0,255,255,.6), inset 0 0 30px rgba(0,255,255,.1); } } @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } } @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } } @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } @keyframes particleFloat { 0% { transform: translate(0,0) scale(1); opacity: .6; } 50% { opacity: 1; } 100% { transform: translate(var(--tx),var(--ty)) scale(0); opacity: 0; } } .glow-box { animation: glowPulse 3s ease-in-out infinite; } .slide-up { animation: slideUp .6s ease-out both; } .float-anim { animation: float 3s ease-in-out infinite; } .bounce { animation: bounce 2s ease-in-out infinite; } .particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: cyan; animation: particleFloat 1.5s ease-out forwards; pointer-events: none; } .btn-cyber { background: linear-gradient(135deg,#00e5ff,#0052d4); border: 1px solid rgba(0,255,255,.3); transition: all .3s; color: white; font-weight: bold; cursor: pointer; } .btn-cyber:hover { box-shadow: 0 0 25px rgba(0,255,255,.5); transform: translateY(-2px); } .card-dark { background: rgba(20,20,30,.85); border: 1px solid rgba(0,255,255,.15); backdrop-filter: blur(10px); } .nav-item { transition: all .3s; cursor: pointer; } .nav-item.active { background: rgba(0,255,255,.2); border-color: rgba(0,255,255,.6); } input, select, textarea { background: rgba(10,10,20,.8) !important; border: 1px solid rgba(0,255,255,.2) !important; color: #e0e0e0 !important; padding: 10px !important; border-radius: 6px !important; } input:focus, select:focus, textarea:focus { border-color: rgba(0,255,255,.8) !important; box-shadow: 0 0 15px rgba(0,255,255,.2) !important; outline: none !important; } .hidden { display: none !هام؛ } ::-webkit-scrollbar { العرض: 6 بكسل؛ } ::-webkit-scrollbar-track { الخلفية: rgba(0,0,0,.3)؛ } ::-webkit-scrollbar-thumb { الخلفية: rgba(0,255,255,.3)؛ نصف قطر الحواف: 3 بكسل؛ } .quiz-option { الانتقال: الكل 0.3 ثانية؛ المؤشر: مؤشر؛ الحدود: 1 بكسل صلب rgba(0,255,255,.15)؛ الحشو: 12 بكسل؛ نصف قطر الحواف: 8 بكسل؛ } .quiz-option:hover { لون الحدود: rgba(0,255,255,.5)؛ الخلفية: rgba(0,255,255,.05)؛ } .quiz-option.selected { لون الحدود: #00e5ff؛ background: rgba(0,229,255,.1); } .quiz-option.correct { border-color: #00e676; background: rgba(0,230,118,.15); color: #00e676; } .quiz-option.wrong { border-color: #ff1744; background: rgba(255,23,68,.15); color: #ff1744; } .category-btn { position: relative; } .category-btn .delete-btn { position: absolute; top: -8px; right: -8px; background: #ff1744; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; cursor: pointer; opacity: 0; transition: opacity .3s; } .category-btn:hover .delete-btn { opacity: 1; } </style> <style>body { box-sizing: border-box; }</style> <script src="/_sdk/data_sdk.js" type="text/javascript"></script> </head> <body class="h-full bg-opacity-90" style="background-color: #0a0a14;"> <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden"></div><!-- تسجيل الشاشة --> <div id="screen-register" class="h-full w-full flex items-center justify-center p-4 relative"> <div class="card-dark rounded-2xl p-8 w-full max-w-md slide-up glow-box"> <div class="text-center mb-6"> <div class="text-5xl mb-3 float-anim"> ⚗️ </div> <h1 style="color:#00e5ff" class="text-3xlfont-bold mb-2">🏫 مدرسة شلبوكة</h1> <p style="color:#ffd700" class="text-smfont-bold mb-1">محمود شلبي</p> <p style="color:#7a8ba0" class="text-sm"> إنشاء حساب جديد</p> </div> <form id="register-form" class="space-y-4" onsubmit="return HandleRegister(event)"> <div> <label class="block text-xs mb-1font-bold" style="color:#00e5ff">الاسم الكامل *</label> <input id="reg-name" type="text" placeholder="محمود / أحمد / علي" مطلوب> <p id="reg-name-err" فئة = "نص-XS MT-1 مخفي" style="color:#ff1744">⚠️ أدخل اسمك الكامل</p> </div> <div> <label class="block text-xs mb-1font-bold" style="color:#00e5ff">البريد الإلكتروني *</label> <input id="reg-email" type="email" placeholder="student@example.com" required>
+      <p id="reg-email-err" class="text-xs mt-1 hidden" style="color:#ff1744">⚠️ البريد غير صحيح</p>
+     </div>
+     <div>
+      <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">كلمة المرور *</label> <input id="reg-pass" type="password" placeholder="كلمة مرور قوية" required>
+     </div><button type="submit" class="btn-cyber w-full py-3 rounded-xl text-sm">إنشاء الحساب 🚀</button>
+     <p class="text-center text-xs" style="color:#7a8ba0">عندك حساب؟ <span onclick="showScreen('login')" style="color:#00e5ff;cursor:pointer;font-bold">سجل دخول</span></p>
+    </form>
+   </div>
+  </div><!-- LOGIN SCREEN -->
+  <div id="screen-login" class="h-full w-full flex items-center justify-center p-4 relative hidden">
+   <div class="card-dark rounded-2xl p-8 w-full max-w-md slide-up glow-box">
+    <div class="text-center mb-6">
+     <div class="text-5xl mb-3 float-anim">
+      🔬
+     </div>
+     <h1 style="color:#00e5ff" class="text-3xl font-bold mb-2">🏫 مدرسة شلبوكة</h1>
+     <p style="color:#ffd700" class="text-sm font-bold mb-1">محمود شلبي</p>
+     <p style="color:#7a8ba0" class="text-sm">تسجيل الدخول</p>
+    </div>
+    <form id="login-form" class="space-y-4" onsubmit="return handleLogin(event)">
+     <div>
+      <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">البريد الإلكتروني</label> <input id="login-email" type="email" placeholder="example@email.com" required>
+     </div>
+     <div>
+      <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">كلمة المرور</label> <input id="login-pass" type="password" placeholder="كلمة المرور" required>
+     </div><button type="submit" class="btn-cyber w-full py-3 rounded-xl text-sm">دخول 🔓</button>
+     <p id="login-err" class="text-center text-xs hidden" style="color:#ff1744">⚠️ البريد أو كلمة المرور غلط</p>
+     <p class="text-center text-xs" style="color:#7a8ba0">مالكش حساب؟ <span onclick="showScreen('register')" style="color:#00e5ff;cursor:pointer;font-bold">سجل دلوقتي</span></p>
+    </form>
+    <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(0,255,255,.1)">
+     <p class="text-xs text-center mb-2" style="color:#ffd700">🔓 حساب المدير:</p> <p class="text-xs text-center" style="color:#00e5ff">admin@shelboukaschool.com</p> <p class="text-xs text-center" style="color:#00e5ff">admin123</p> </div> </div> </div><!-- التطبيق الرئيسي --> <div id="screen-app" class="h-full w-full flex flex-col relative hidden"> <!-- رأس الصفحة --> <header class="flex items-center justify-between px-4 py-3 border-b" style="background:rgba(10,10,20,.9);border-color:rgba(0,255,255,.1)"> <div class="flex items-center gap-2"> <span <div class="text-2xl">⚗️</span> <div> <h1 id="app-title" style="color:#00e5ff" class="font-bold">🏫 مدرسة شلبوكة</h1> <p id="teacher-name" style="color:#ffd700" class="text-xs font-bold">محمود شلبي</p> </div> </div> <div class="flex items-center gap-3"> <span id="user-info" style="color:#7a8ba0" class="text-xs"></span> <button id="admin-btn" onclick="toggleAdmin()" class="hidden text-xs px-3 py-1 rounded-lg" style="color:#ffd700;border:1px solid rgba(255,215,0,.3)">⚙️ لوحة زر</button> <button onclick="logout()" class="text-xs px-3 py-1 rounded-lg" style="color:#ff1744;border:1px solid rgba(255,23,68,.3)"> تسجيل الخروج</button> </div> </header><!-- TABS --> <nav class="flex gap-1 px-3 py-2 overflow-x-auto" style="background:rgba(10,10,20,.7)"> <button onclick="switchTab('leaderboard')" data-tab="leaderboard" class="nav-item px-3 py-2 rounded-lg text-xs font-bold border border-transparent whitespace-nowrap" style="color:#e0e0e0">🏆 تسجيل الخروج</button> <button onclick="switchTab('quiz')" data-tab="quiz" class="nav-item px-3 py-2 rounded-lg text-xs font-bold border border-transparent whitespace-nowrap" style="color:#e0e0e0">📝 أسئلة</button> <button onclick="switchTab('videos')" data-tab="videos" class="nav-item px-3 py-2 rounded-lg text-xs font-bold border border-transparent whitespace-nowrap" style="color:#e0e0e0">🎬 فيديو</button> <button onclick="switchTab('pdfs')" data-tab="pdfs" class="nav-item px-3 py-2 rounded-lg text-xs font-bold border border-transparent whitespace-nowrap" style="color:#e0e0e0">📄 ملفات</button> <button onclick="switchTab('ai')" data-tab="ai" class="nav-item px-3 py-2 rounded-lg text-xs font-bold border border-transparent whitespace-nowrap" style="color:#e0e0e0">🤖 مساعد علامة تبويب</button> </nav><!-- CONTENT --> <main id="content-area" class="flex-1 overflow-auto p-4"> <!-- LEADERBOARD TAB --> <div id="tab-leaderboard" class="hidden"> <div class="card-dark rounded-xl p-6 slide-up" style="border:1px solid rgba(0,229,255,.2)"> <h2 style="color:#ffd700" class="text-2xl Font-bold mb-6 text-center">🏆 ترتيب أفضل طالب</h2> <div id="leaderboard-list" class="space-y-3"></div> </div> </div><!-- QUIZ TAB --> <div id="tab-quiz" class="hidden"> <div id="quiz-buttons-container" class="flex flex-wrap Gap-2 mb-4"></div><button id="add-category-btn" onclick="openCategoryModal()" class="hidden btn-cyber px-4 py-2 rounded-lg text-xs mb-4">➕ إضافة وحدة جديدة</button> <div id="quiz-container"></div> <div id="quiz-result" class="hidden text-center py-8"></div> </div><!-- علامة تبويب الفيديوهات --> <div id="tab-videos" class="hidden"> <h2 style="color:#e0e0e0" class="text-lg font-bold mb-4">🎬 فيديوهات تعليمية</h2> <div id="videos-list" class="space-y-3"></div> </div><!-- علامة تبويب ملفات PDF --> <div id="tab-pdfs" class="hidden"> <h2 style="color:#e0e0e0" class="text-lg font-bold mb-4">📄 ملفات PDF</h2> <div id="pdfs-list" class="space-y-3"></div> </div><!-- علامة تبويب الذكاء الاصطناعي --> <div id="tab-ai" class="hidden flex flex-col" style="height:100%"> <div id="chat-messages" class="flex-1 overflow-auto space-y-3 mb-3 p-3"></div> <div class="flex gap-2"> <input id="chat-input" type="text" placeholder="اسأل عن المحادثة..." onkeydown="if(event.key==='Enter')sendChat()"> <button onclick="sendChat()" class="btn-cyber px-4 py-2 rounded-lg text-xs">إرسال</button> </div> </div> </main> </div><!-- CATEGORY MODAL --> <div id="category-modal" class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden" style="background:rgba(0,0,0,.8);backdrop-filter:blur(5px)"> <div class="card-dark rounded-2xl p-8 w-full max-w-md slide-up" style="border:1px solid rgba(0,229,255,.2)"> <div class="flex justify-between items-center mb-6"> <h1 style="color:#ffd700" class="text-2xl font-bold">➕ تمت إضافة فئة جديدة</h1><button onclick="closeCategoryModal()" class="text-2xl" style="color:#7a8ba0">✕</button> </div> <form class="space-y-4" onsubmit="return addCategory(event)"> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">اسم الفئة</label> <input id="cat-name" type="text" placeholder="مثال: رمز تعبيري" required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">الإيموجي 😊</label> <input id="cat-emoji" type="text" placeholder="🧪" maxlength="2" required> </div><button type="submit" class="btn-cyber w-full py-3 rounded-lg text-sm"> إرسال الوحدة ✅</button> </form> </div> </div><!-- لوحة التحكم --> <div id="admin-panel" class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden" style="background:rgba(0,0,0,.8);backdrop-filter:blur(5px)"> <div class="card-dark rounded-2xl p-8 w-full max-w-3xl slide-up" style="max-height:90vh;overflow-y:auto"> <div class="flex justify-between items-center mb-6"> <h1 style="color:#ffd700" class="text-2xl font-bold">⚙️ لوحة مفاتيح</h1><button onclick="toggleAdmin()" class="text-2xl" style="color:#7a8ba0">✕</button> </div><!-- إضافة فيديو --> <div class="card-dark rounded-xl p-5 mb-5" style="border:1px solid rgba(0,229,255,.2)"> <h2 style="color:#00e5ff" class="text-lg font-bold mb-3">➕ تمت إضافة فيديو</h2> <form class="space-y-3" onsubmit="return addVideo(event)"> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff"> عنوان الفيديو</label> <input id="video-title" type="text" placeholder="مثال: شرح الدعوات" required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff"> رابط يوتيوب</label> <input id="video-url" type="url" placeholder="https://youtube.com/..." required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">المدة (دقائق)</label> <input id="video-duration" type="text" placeholder="15:30" required>
+      </div><button type="submit" class="btn-cyber w-full py-2 rounded-lg text-xs">إضافة الفيديو ✅</button>
+     </form>
+    </div><!-- ADD PDF -->
+    <div class="card-dark rounded-xl p-5 mb-5" style="border:1px solid rgba(0,229,255,.2)">
+     <h2 style="color:#00e5ff" class="text-lg font-bold mb-3">📄 إضافة ملف PDF</h2>
+     <form class="space-y-3" onsubmit="return addPDF(event)">
+      <div>
+       <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">عنوان الملف</label> <input id="pdf-title" type="text" placeholder="مثال: ملخص الوحدة 1" required>
+      </div>
+      <div>
+       <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">رابط التحميل</label> <input id="pdf-url" type="url" placeholder="https://example.com/file.pdf" required>
+      </div><button type="submit" class="btn-cyber w-full py-2 rounded-lg text-xs">إضافة الملف ✅</button>
+     </form>
+    </div><!-- ADD QUESTION -->
+    <div class="card-dark rounded-xl p-5 mb-5" style="border:1px solid rgba(0,229,255,.2)">
+     <h2 style="color:#00e5ff" class="text-lg font-bold mb-3">❓ إضافة سؤال</h2>
+     <form class="space-y-3" onsubmit="return addQuestion(event)">
+      <div>
+       <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">الوحدة</label> <select id="q-unit" required> <option value="">اختر وحدة</option> </select>
+      </div>
+      <div>
+       <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">السؤال</label> <input id="q-text" type="text" placeholder="السؤال هنا" required>
+      </div>
+      <div>
+       <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">مستوى الصعوبة</label> <select id="q-difficulty" required> <option value="easy">🟢 سهل (3 نقط)</option> <option value="medium">🟡 متوسط (7 نقط)</option> <option value="hard">🔴 صعب (10 نقط)</option> <option value="genius">⭐ عبقري (15 نقطة)</option> </select>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-xs mb-1 font-bold" style="color:<label class="block text-xs mb-1 font-bold" style="color:#00e5ff">أ</label> <input id="qa" type="text" placeholder="اختر أ" required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">ب</label> <input id="qb" type="text" placeholder="اختر ب" required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">ج</label> <input id="qc" type="text" placeholder="اختر ج" required> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">د</label> <input id="qd" type="text" placeholder="اختر د" required> </div> </div> <div> <label class="block text-xs mb-1 font-bold" style="color:#00e5ff">الخيارات الصحيحة</label> <select id="q-correct" required> <option value="">اختر</option> <option value="0">أ</option> <option value="1">ب</option> <option value="2">ج</option> <option value="3">د</option> </select> </div><button type="submit" class="btn-cyber w-full py-2 rounded-lg text-xs">إرسال السؤال ✅</button> </form> </div><!-- عرض الطلاب --> <div class="card-dark rounded-xl p-5" style="border:1px solid rgba(0,229,255,.2)"> <h2 style="color:#00e5ff" class="text-lgfont-bold mb-3">👥 الطالب المسجلين</h2> <div id="students-list" class="space-y-2 max-h-64 overflow-y-auto"> <p style="color:#7a8ba0" class="text-xs">جارٍ تحميل الطلاب...</p> </div> </div> </div> </div> <script> // ==================== STATE ==================== let currentUser = null; Let allUsers = []; Let quizzes = {unit1: [ { q: 'ما هو تفاعل الانحلال الطبعة؟', opts: ['تكسير مركب بالحرارة', 'اتحاد عناصرين', 'تبادل أيونات', 'تفاعل الأكسدة']، صحيح: 0، الصعوبة: 'سهل'، النقاط: 3 }، { q: 'أي من التالي يعتبر تفاعل إحلال مزدوج؟'، opts: ['تبادل أيونات'، 'Mg + O₂'، '2H₂O₂ → 2H₂O + O₂'، 'Fe + CuSO₄']، صحيح: 0، الصعوبة: 'متوسط'، النقاط: 7 }، { q: 'تفاعل التغذية والاختزال يحدث عندما:'، opts: ['تتبادل الأيونات'، 'تنتقل الإلكترونات'، 'تتحرر غازات'، 'تكون راسب']، صحيح: 1، الصعوبة: 'hard'، النقاط: 10 } ]، الوحدة2: [ { q: 'التفاعل الطارد للحرارة:'، opts: ['يطلق الطاقة'، 'يمتص الطاقة'،'لا يتغير', 'يحتاج كهرباء'], correct: 0, difficulty: 'easy', points: 3 },
+    { q: 'طاقة التنشيط هي:', opts: ['الطاقة الناتجة', 'الطاقة المفقودة', 'الحد الأدنى لبدء التفاعل', 'الطاقة الحركية'], correct: 2, difficulty: 'hard', points: 10 },
+    { q: 'الحفاز يعمل على:', opts: ['زيادة الحرارة', 'تقليل طاقة التنشيط', 'إيقاف التفاعل', 'تكوين روابط جديدة'], correct: 1, difficulty: 'medium', points: 7 }
+  ],
+  unit3: [
+    { q: 'DNA يتكون من:', opts: ['أحماض أمينية', 'أحماض دهنية', 'نيوكليوتيدات', 'سكريات فقط'], correct: 2, difficulty: 'medium', points: 7 },
+    { q: 'عدد كروموسومات الإنسان:', opts: ['23', '48', '44', '46'], correct: 3, difficulty: 'easy', points: 3 },
+    { q: 'الجينات هي:', opts: ['هرمونات', 'وحدات الوراثة', 'إنزيمات', 'فيتامينات'], correct: 1, difficulty: 'medium', points: 7 }
+  ],
+  unit4: [
+    { q: 'الأنسولين يفرز من:', opts: ['الكبد', 'الكلى', 'البنكرياس', 'الغدة الدرقية'], correct: 2, difficulty: 'genius', points: 15 },
+    { q: 'الأدرينالين يعرف بهرمون:', opts: ['النمو', 'السعادة', 'الطوارئ', 'النوم'], correct: 2, difficulty: 'medium', points: 7 },
+    { q: 'الهرمونات تفرز من:', opts: ['العضلات', 'الجهاز العصبي', 'الغدد الصماء', 'العظام'], correct: 2, difficulty: 'hard', points: 10 }
+  ]
+};
+
+let categories = [
+  { id: 'unit1', name: 'التفاعلات', emoji: '⚡' },
+  { id: 'unit2', name: 'الطاقة', emoji: '🔥' },
+  { id: 'unit3', name: 'الجينات', emoji: '🧬' },
+  { id: 'unit4', name: 'الهرمونات', emoji: '💉' }
+];
+
+let videos = [
+  { id: 1, title: 'شرح التفاعلات الكيميائية', url: 'https://www.youtube.com/embed/EJ2sI0y60Wc', duration: '15:30' },
+  { id: 2, title: 'الطاقة في التفاعلات', url: 'https://www.youtube.com/embed/Xl3oB-H6-9c', duration: '12:45' }
+];
+
+let pdfs = [
+  { id: 1, title: 'ملخص الوحدة 1', url: 'https://example.com/pdf1.pdf' },
+  { id: 2, title: 'ملزمة الهرمونات', url: 'https://example.com/pdf2.pdf' }
+];
+
+let quizState = { unit: null, current: 0, answers: new Array(20).fill(-1), submitted: false, pointsEarned: 0 };
+
+// ==================== USERS (Local Storage) ====================
+let allUsersData = [];
+
+function loadUsers() {
+  const saved = localStorage.getItem('school_users');
+  allUsersData = saved ? JSON.parse(saved) : [];
+}
+
+function saveUsers() {
+  localStorage.setItem('school_users', JSON.stringify(allUsersData));
+}
+
+// ==================== CONFIG ====================
+const defaultConfig = {
+  app_title:'🏫 مدرسة شلبوكة', teacher_name: 'محمود شلبي', Welcome_message: 'أهلاً وسهلاً في مدرسة شلبوكة' }; // ==================== ELEMENT SDK ==================== window.elementSdk.init({ defaultConfig, onConfigChange: async (cfg) => { document.getElementById('app-title').textContent = cfg.app_title || defaultConfig.app_title; document.getElementById('teacher-name').textContent = cfg.teacher_name || defaultConfig.teacher_name; }, mapToCapabilities: (cfg) => ({ recolorables: [], borderables: [], fontEditable: undefined, fontSizeable: undefined }), mapToEditPanelValues: (cfg) => new Map([ ['school_name', ['اسم_المعلم', cfg.teacher_name || defaultConfig.teacher_name], ['رسالة_الترحيب', cfg.welcome_message || defaultConfig.welcome_message] ]) }); // ==================== الشاشات ==================== function showScreen(name) { document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden')); const screen = document.getElementById('screen-' + name); if (screen) { screen.classList.remove('hidden'); إذا كان (الاسم === 'app') { تبديل علامة التبويب('leaderboard'); lucide.createIcons(); } } } // ==================== المصادقة ==================== دالة handleRegister(e) { e.preventDefault(); const name = document.getElementById('reg-name').value.trim(); const email = document.getElementById('reg-email').value.trim(); const pass = document.getElementById('reg-pass').value.trim(); const nameErr = document.getElementById('reg-name-err'); const emailErr = document.getElementById('reg-email-err'); nameErr.classList.add('hidden'); emailErr.classList.add('hidden'); if (!name || name.length < 3) { nameErr.classList.remove('hidden'); عودة كاذبة. } if (!email.includes('@') || !email.includes('.')) { emailErr.classList.remove('hidden'); عودة كاذبة. } // التحقق من وجود المستخدم const userExists = allUsersData.some(u => u.email === email); if (userExists) { emailErr.textContent = '⚠️ البريد مستخدم بالفعل'; emailErr.classList.remove('hidden'); عودة كاذبة. } // حفظ المستخدم الجديد const newUser = { البريد الإلكتروني، كلمة المرور: المرور، الاسم الكامل: الاسم، الدور: 'student'، TotalPoints: 0 }; allUsersData.push(newUser); saveUsers(); المستخدم الحالي = { البريد الإلكتروني، الاسم، الدور: 'طالب' }; document.getElementById('user-info').textContent = الاسم; spawnParticles(10); showScreen('app'); document.getElementById('register-form').reset(); return false; } function handleLogin(e) { e.preventDefault(); const email = document.getElementById('login-email').value.trim(); const pass = document.getElementById('login-pass').value.trim(); const err = document.getElementById('login-err'); err.classList.add('hidden'); // إنشاء حساب المدير if (email === 'admin@shelboukaschool.com' && pass === 'admin123') { currentUser = { email, name: 'Mahmoud Shelbi (Al-Mulam)', role: 'admin' }; document.getElementById('user-info').textContent = 'Mahmoud Shelbi 👨‍🏫'; document.getElementById('admin-btn').classList.remove('hidden'); spawnParticles(15); showScreen('app'); document.getElementById('login-form').reset(); return false; } // إنشاء المستخدمين العاديين const user = allUsersData.find(u => u.email === email && u.password === pass); if (user) { currentUser = { email, name: user.fullname, role: 'student' }; document.getElementById('user-info').textContent = user.fullname; spawnParticles(10); showScreen('app'); document.getElementById('login-form').reset(); } else { err.classList.remove('hidden'); } return false; } function logout() { currentUser = null; document.getElementById('admin-btn').classList.add('hidden'); showScreen('register'); } // ==================== الفئات ==================== دالة renderCategoryButtons() { const container = document.getElementById('quiz-buttons-container'); container.innerHTML = categories.map(cat => ` <div class="category-btn relative"> <button onclick="loadQuiz('${cat.id}')" class="btn-cyber px-4 py-2 rounded-lg text-xs">${cat.emoji} ${cat.name}</button> ${currentUser && currentUser.role === 'admin' ? `<button class="delete-btn" onclick="deleteCategory('${cat.id}')">✕</button>` : ''} </div> `).join(''); // عرض زر الإضافة فقط const addBtn = document.getElementById('add-category-btn'); إذا كان المستخدم الحالي (currentUser) ووظيفته (currentUser.role) هي "admin"، فسيتم حذف فئة "hidden" من قائمة فئات زر الإضافة (addBtn). وإلا، فسيتم إضافة فئة "hidden" إلى قائمة فئات زر الإضافة. يتم تعريف دالة فتح نافذة الفئة (openCategoryModal) عن طريق حذف فئة "hidden" من قائمة فئات عنصر "category-modal". يتم تعريف دالة إغلاق نافذة الفئة (closeCategoryModal) عن طريق إضافة فئة "hidden" إلى قائمة فئات عنصر "category-modal". يتم تعريف دالة إضافة الفئة (addCategory) عن طريق منع السلوك الافتراضي لعنصر "category-modal". يتم استخراج اسم الفئة (cat-name) ورمز الإيموجي (emoji) من عنصر "cat-emoji". if (!name || !emoji) { showErrorMessage('⚠️ توليه جميع الفيروسات'); عودة كاذبة. } const newId = 'custom_' + Date.now(); الفئات.push({ المعرف: newId، الاسم،emoji });
+  quizzes[newId] = [];
+
+  // تحديث قائمة الوحدات في نموذج الإضافة
+  updateUnitSelect();
+  renderCategoryButtons();
+  closeCategoryModal();
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-emoji').value = '';
+  showSuccessMessage('✅ تم إضافة الوحدة!');
+  spawnParticles(10);
+  return false;
+}
+
+function deleteCategory(id) {
+  if (confirm(`هل متأكد من حذف هذه الوحدة؟`)) {
+    categories = categories.filter(c => c.id !== id);
+    delete quizzes[id];
+    updateUnitSelect();
+    renderCategoryButtons();
+    showSuccessMessage('✅ تم حذف الوحدة!');
+  }
+}
+
+function updateUnitSelect() {
+  const select = document.getElementById('q-unit');
+  select.innerHTML = '<option value="">اختر وحدة</option>' + categories.map(cat => `<option value="${cat.id}">${cat.emoji} ${cat.name}</option>`).join('');
+}
+
+// ==================== QUIZ ====================
+function loadQuiz(unit) {
+  if (!quizzes[unit]) return;
+  quizState = { unit, current: 0, answers: new Array(quizzes[unit].length).fill(-1), submitted: false, pointsEarned: 0 };
+  document.getElementById('quiz-result').classList.add('hidden');
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const cont = document.getElementById('quiz-container');
+  const qs = quizzes[quizState.unit];
+  if (!qs || qs.length === 0) {
+    cont.innerHTML = '<p style="color:#7a8ba0" class="text-center py-8">اختار وحدة من فوق 👆</p>';
+    return;
+  }
+
+  const q = qs[quizState.current];
+  const i = quizState.current;
+
+  let difficultyEmoji = { easy: '🟢', medium: '🟡', hard: '🔴', genius: '⭐' }[q.difficulty] || '🟢';
+
+  let html = `
+    <div class="card-dark rounded-xl p-5 slide-up">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold" style="color:#00e5ff">سؤال ${i+1}</span>
+          <span class="text-xs font-bold" style="color:#ffd700">${difficultyEmoji} ${q.points} نقطة</span>
+        </div>
+        <span class="text-xs font-bold" style="color:#00e5ff">نقاطك: ${quizState.pointsEarned}</span>
+      </div>
+      <h3 style="color:#e0e0e0" class="text-sm font-bold mb-4">${q.q}</h3>
+      <div class="space-y-2">`;
+
+  q.opts.forEach((opt, idx) => {
+    let cls = 'quiz-option';
+    let onclick = `selectAnswer(${idx})`;
+    if (quizState.answers[i] === idx) cls += ' selected';
+    html += `<div class="${cls}" onclick="${onclick}" style="color:#e0e0e0">${String.fromCharCode(1575+idx)}) ${opt}</div>`;
+  });
+
+  html += `</div></div>`;
+  cont.innerHTML = html;
+}
+
+function selectAnswer(idx) {
+  if (quizState.submitted) return;
+  const qs = quizzes[quizState.unit];
+  const q = qs[quizState.current];
+  
+  if (idx === q.correct) {
+    // إجابة صحيحة
+    quizState.answers[quizState.current] = idx;
+    quizState.pointsEarned += q.points;
+    
+    // حفظ النقاط في localStorage
+    const userIndex = allUsersData.findIndex(u => u.email === currentUser.email);
+    if (userIndex !== -1) {
+      allUsersData[userIndex].totalPoints = (parseInt(allUsersData[userIndex].totalPoints) || 0) + q.points;
+      saveUsers();
+    }
+    
+    // إظهار رسالة النجاح
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,230,118,.95);color:white;padding:30px 50px;border-radius:15px;font-size:20px;font-weight:bold;z-index:1000;box-shadow:0 0 40px rgba(0,230,118,.6)';
+    msg.textContent = `✅ صحيح! +${q.points} نقطة`;
+    document.body.appendChild(msg);
+    
+    setTimeout(() => {
+      msg.remove();
+      quizState.current += 1;
+      if (quizState.current >= qs.length) {
+        quizState.submitted = true;
+        submitQuiz();
+      } else {
+        renderQuiz();
+      }
+    }, 1500);
+  } else {
+    // إجابة خاطئة
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,23,68,.95);color:white;padding:30px 50px;border-radius:15px;font-size:20px;font-weight:bold;z-index:1000;box-shadow:0 0 40px rgba(255,23,68,.6)';
+    msg.textContent = `❌ خطأ! جرب سؤال آخر`;
+    document.body.appendChild(msg);
+    
+    setTimeout(() => {
+      msg.remove();
+      let nextQuestion = Math.floor(Math.random() * qs.length);
+      while (nextQuestion === quizState.current && qs.length > 1) {
+        nextQuestion = Math.floor(Math.random() * qs.length);
+      }
+      quizState.current = nextQuestion;
+      renderQuiz();
+    }, 1500);
+  }
+}
+
+function submitQuiz() {
+  const qs = quizzes[quizState.unit];
+  
+  const pct = Math.round((quizState.pointsEarned / (qs.length * 10)) * 100);
+  let rank = quizState.pointsEarned >= 50 ? '⭐ ممتاز' : quizState.pointsEarned >= 30 ? '✅ جيد' : '📚 أعد المحاولة';
+  let color = quizState.pointsEarned >= 50 ? '#ffd700' : quizState.pointsEarned >= 30 ? '#00e676' : '#ff1744';
+
+  document.getElementById('quiz-result').innerHTML = `
+    <div>
+      <div class="text-5xl mb-3">${quizState.pointsEarned >= 50 ? '🏆' : quizState.pointsEarned >= 30 ? '✅' : '📚'}</div>
+      <div class="text-4xl font-bold mb-2" style="color:${color}">${quizState.النقاط المكتسبة} نقاط</div> <p class="text-sm mb-3" style="color:${color}">${rank}</p> <button onclick="location.reload()" class="btn-cyber px-6 py-2 rounded-lg text-xs">🔄 المزيد من الأسئلة</button> </div>`; document.getElementById('quiz-result').classList.remove('hidden'); document.getElementById('quiz-container').innerHTML = ''; spawnParticles(quizState.pointsEarned >= 30 ? 20 : 5); } // ==================== لوحة المتصدرين ==================== function renderLeaderboard() { const list = document.getElementById('leaderboard-list'); if (allUsersData.length === 0) { list.innerHTML = '<p style="color:#7a8ba0" class="text-center py-8">لا توجد حسابات بعد</p>'; return; } const sortedUsers = [...allUsersData].sort((a, b) => { const pointsA = parseInt(a.totalPoints) || 0; const pointsB = parseInt(b.totalPoints) || 0; return pointsB - pointsA; }); list.innerHTML = sortedUsers.map((user, idx) => { const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : (idx + 1); const bg = idx < 3 ? 'rgba(255,215,0,.1)' : 'rgba(0,229,255,.05)'; const border = idx < 3 ? 'rgba(255,215,0,.3)' : 'rgba(0,229,255,.1)'; return ` <div class="flex items-center justify-between px-4 py-3 rounded-xl" style="background:${bg};border:1px solid ${border}"> <div class="flex items-center gap-3 flex-1"> <span class="text-2xl font-bold" style="color:#ffd700;width:40px;text-align:center">${medal}</span> <div class="flex-1 min-w-0"> <p style="color:#e0e0e0" class="text-sm font-bold truncate">${user.fullname}</p> <p style="color:#7a8ba0" class="text-xs truncate">${user.email}</p> </div> </div> <div class="text-right"> <p style="color:#ffd700" class="text-lg font-bold">${parseInt(user.totalPoints) || 0}</p> <p style="color:#7a8ba0" class="text-xs">نقطة</p> </div> </div> `; }).ينضم('')؛ } // ==================== فيديوهات ==================== function renderVideos() { const html = videos.map(v => ` <div class="card-dark rounded-xl p-4 flex items-center gap-4" style="border:1px solid rgba(0,229,255,.15)"> <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(0,229,255,.1)"> 🎬 </div> <div class="flex-1 min-w-0"> <h3 style="color:#e0e0e0" class="text-sm font-bold truncate">${v.title}</h3>
+        <p style="color:#7a8ba0" class="text-xs">${v.duration}</p>
+      </div>
+      <a href="${v.url}" target="_blank" rel="noopener noreferrer" class="btn-cyber px-3 py-2 rounded-lg text-xs">▶ شاهد</a>
+    </div>
+  `).join('');
+  document.getElementById('videos-list').innerHTML = html || '<p style="color:#7a8ba0">لا توجد فيديوهات حالياً</p>';
+}
+
+function addVideo(e) {
+  e.preventDefault();
+  const title = document.getElementById('video-title').value.trim();
+  const url = document.getElementById('video-url').value.trim();
+  const duration = document.getElementById('video-duration').value.trim();
+
+  if (!title || !url || !duration) {
+    showErrorMessage('⚠️ ملء جميع الحقول');
+    return false;
+  }
+
+  videos.push({ id: Date.now(), title, url, duration });
+  renderVideos();
+  document.querySelector('[onsubmit="return addVideo(event)"]').reset();
+  showSuccessMessage('✅ تم إضافة الفيديو!');
+  spawnParticles(8);
+  return false;
+}
+
+// ==================== PDFS ====================
+function renderPDFs() {
+  const html = pdfs.map(p => `
+    <div class="card-dark rounded-xl p-4 flex items-center gap-4" style="border:1px solid rgba(0,229,255,.15)">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">📄</div>
+      <div class="flex-1 min-w-0">
+        <h3 style="color:#e0e0e0" class="text-sm font-bold truncate">${p.title}</h3>
+        <p style="color:#7a8ba0" class="text-xs">ملف PDF</p>
+      </div>
+      <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="btn-cyber px-3 py-2 rounded-lg text-xs">⬇ حمل</a>
+    </div>
+  `).join('');
+  document.getElementById('pdfs-list').innerHTML = html || '<p style="color:#7a8ba0">لا توجد ملفات حالياً</p>';
+}
+
+function addPDF(e) {
+  e.preventDefault();
+  const title = document.getElementById('pdf-title').value.trim();
+  const url = document.getElementById('pdf-url').value.trim();
+
+  if (!title || !url) {
+    showErrorMessage('⚠️ ملء جميع الحقول');
+    return false;
+  }
+
+  pdfs.push({ id: Date.now(), title, url });
+  renderPDFs();
+  document.querySelector('[onsubmit="return addPDF(event)"]').reset();
+  showSuccessMessage('✅ تم إضافة الملف!');
+  spawnParticles(8);
+  return false;
+}
+
+// ==================== AI ====================
+const aiKnowledge = {
+  'تفاعل': '🔬 التفاعل الكيميائي هو تحول المواد من صيغة لأخرى بتكسير وتكوين روابط جديدة',
+  'أكسدة':'⚡ الأكسدة هي فقدان الإلكترونات من الذرة',
+  'اختزال': '🔋 الاختزال هو اكتساب الإلكترونات والأكسدة والاختزال يحصلان معاً',
+  'طاقة': '⚡ الطاقة ضرورية لحدوث التفاعلات الكيميائية والحفاز يقلل طاقة التنشيط',
+  'أنسولين': '💉 الأنسولين هرمون بينظم السكر في الدم ويفرز من البنكرياس',
+  'dna': '🧬 DNA حامل المعلومات الوراثية ويتكون من سلسلتين ملتفتين',
+  'هرمونات': '🧪 الهرمونات رسائل كيميائية بتتحكم في النمو والأيض والتكاثر',
+  'جينات': '🧬 الجينات وحدات الوراثة وكل جين بيحمل تعليمات لصنع بروتين'
+};
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  addChatBubble(msg, 'user');
+  input.value = '';
+
+  setTimeout(() => {
+    let reply = '🤔 يعم الموضوع مهم! اسأل عن: التفاعلات، الأكسدة، الطاقة، الهرمونات، DNA';
+    const lower = msg.toLowerCase();
+    for (const [key, val] of Object.entries(aiKnowledge)) {
+      if (lower.includes(key)) {
+        reply = val;
+        break;
+      }
+    }
+    addChatBubble(reply, 'ai');
+  }, 600);
+}
+
+function addChatBubble(text, type) {
+  const chat = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.style.cssText = `padding:10px;border-radius:8px;max-width:80%;${type === 'ai' ? 'margin-right:auto;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3)' : 'margin-left:auto;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2)'}`;
+  div.style.color = '#e0e0e0';
+  div.textContent = (type === 'ai' ? '🤖 ' : '') + text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ==================== ADMIN ====================
+function toggleAdmin() {
+  document.getElementById('admin-panel').classList.toggle('hidden');
+}
+
+function addQuestion(e) {
+  e.preventDefault();
+  const unit = document.getElementById('q-unit').value;
+  const text = document.getElementById('q-text').value.trim();
+  const difficulty = document.getElementById('q-difficulty').value;
+  const a = document.getElementById('q-a').value.trim();
+  const b = document.getElementById('q-b').value.trim();
+  const c = document.getElementById('q-c').value.trim();
+  const d = document.getElementById('q-d').value.trim();
+  const correct = parseInt(document.getElementById('q-correct').value);
+
+  if (!text || !a || !b || !c || !d || isNaN(correct) || !unit) {
+    showErrorMessage('⚠️ ملء جميع الحقول');
+    return false;
+  }
+
+  const pointsMap = { easy: 3, medium: 7, hard: 10, genius: 15 };
+  const points = pointsMap[difficulty] || 3;
+
+  if (!quizzes[unit]) quizzes[unit] = [];
+  quizzes[unit].push({ q: text, opts: [a, b, c, d], correct, difficulty, points });
+  showSuccessMessage('✅ تم إضافة السؤال!'); document.querySelector('[onsubmit="return addQuestion(event)"]').reset(); spawnParticles(8); return false; } function updateStudentsList() { const list = document.getElementById('students-list'); if (allUsersData.length === 0) { list.innerHTML = '<p style="color:#7a8ba0" class="text-xs">لا توجد حسابات بعد</p>'; return; } const sortedUsers = [...allUsersData].sort((a, b) => { const pointsA = parseInt(a.totalPoints) || 0; const pointsB = parseInt(b.totalPoints) || 0; return pointsB - pointsA; }); list.innerHTML = sortedUsers.map((user, idx) => { const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '🎯'; return ` <div class="flex items-center justify-between px-3 py-2 rounded-lg" style="background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.1)"> <div class="flex items-center gap-2"> <span class="text-lg">${medal}</span> <div> <p style="color:#e0e0e0" class="text-xs font-bold">${user.fullname}</p> <p style="color:#7a8ba0" class="text-xs">${user.email}</p> </div> </div> <span class="font-bold" style="color:#ffd700">${parseInt(user.totalPoints) || 0} نقاط</span> </div> `; }).join(''); } // ==================== علامات التبويب ==================== function switchTab(tab) { document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden')); document.querySelectorAll('[data-tab]').forEach(el => el.classList.remove('active')); document.getElementById('tab-' + tab).classList.remove('hidden'); document.querySelector(`[data-tab="${tab}"]`).classList.add('active'); if (tab === 'leaderboard') renderLeaderboard(); if (tab === 'videos') renderVideos(); if (tab === 'pdfs') renderPDFs(); if (tab === 'quiz') { renderCategoryButtons(); updateUnitSelect(); } lucide.createIcons(); } // ==================== الأدوات ==================== function showSuccessMessage(text) { const msg = document.createElement('div'); msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,.95);color:white;padding:15px 30px;border-radius:10px;font-size:14px;font-weight:bold;z-index:2000;box-shadow:0 0 30px rgba(0,230,118,.5);animation:slideUp .3s ease-out'; msg.textContent = text; document.body.appendChild(msg); setTimeout(() => msg.remove(), 3000); } function showErrorMessage(text) { const msg = document.createElement('div'); msg.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(255,23,68,.95);color:white;padding:15px 30px;border-radius:10px;font-size:14px;font-weight:bold;z-index:2000;box-shadow:0 0 30px rgba(255,23,68,.5);animation:slideUp .3s ease-out'; msg.textContent = text; document.body.appendChild(msg); setTimeout(() => msg.remove(), 3000); } function spawnParticles(count) { const cont = document.getElementById('particles'); for (let i = 0; i < count; i++) { const p = document.createElement('div'); p.className = 'particle'; p.style.left = Math.random() * 100 + '%'; p.style.top = Math.random() * 100 + '%'; p.style.setProperty('--tx', (Math.random() * 200 - 100) + 'px'); p.style.setProperty('--ty', (Math.random() * -200 - 50) + 'px'); p.style.background = ['#00e5ff','#0052d4','#00e676','#ffd700'][Math.floor(Math.random()*4)]; cont.appendChild(p); setTimeout(() => p.remove(), 1500); } } // ==================== تهيئة ==================== تحميل المستخدمين(); lucide.createIcons(); </script> <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e42c07363f21d81',t:'MTc3NDgyNzk2My4wMDAwMDA='};var a = document.createElement('script'); a.nonce = ''; a.src = '/cdn-cgi/challenge-platform/scripts/jsd/main.js'; document.getElementsByTagName('head')[0].appendChild(a); b.getElementsByTagName('head')[0].appendChild(d) }} if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>random() * 200 - 100) + 'px'); p.style.setProperty('--ty', (Math.random() * -200 - 50) + 'px'); p.style.background = ['#00e5ff','#0052d4','#00e676','#ffd700'][Math.floor(Math.random()*4)]; cont.appendChild(p); setTimeout(() => p.remove(), 1500); } } // ==================== تهيئة ==================== تحميل المستخدمين(); lucide.createIcons(); </script> <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e42c07363f21d81',t:'MTc3NDgyNzk2My4wMDAwMDA='};var a = document.createElement('script'); a.nonce = ''; a.src = '/cdn-cgi/challenge-platform/scripts/jsd/main.js'; document.getElementsByTagName('head')[0].appendChild(a); b.getElementsByTagName('head')[0].appendChild(d) }} if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>random() * 200 - 100) + 'px'); p.style.setProperty('--ty', (Math.random() * -200 - 50) + 'px'); p.style.background = ['#00e5ff','#0052d4','#00e676','#ffd700'][Math.floor(Math.random()*4)]; cont.appendChild(p); setTimeout(() => p.remove(), 1500); } } // ==================== تهيئة ==================== تحميل المستخدمين(); lucide.createIcons(); </script> <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e42c07363f21d81',t:'MTc3NDgyNzk2My4wMDAwMDA='};var a = document.createElement('script'); a.nonce = ''; a.src = '/cdn-cgi/challenge-platform/scripts/jsd/main.js'; document.getElementsByTagName('head')[0].appendChild(a); b.getElementsByTagName('head')[0].appendChild(d) }} if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>onreadystatechange=e,c())}}}})();</script></body></html>onreadystatechange=e,c())}}}})();</script></body></html>
